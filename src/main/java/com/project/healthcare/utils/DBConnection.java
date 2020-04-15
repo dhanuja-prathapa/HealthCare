@@ -3,7 +3,7 @@ package com.project.healthcare.utils;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-
+import com.project.healthcare.utils.Constants;
 
 public class DBConnection {
 
@@ -20,12 +20,9 @@ public class DBConnection {
 
         if(con==null ||con.isClosed()) {
 
-            String url = "jdbc:mysql://127.0.0.1:3306/healthcare";
-            String username = "root";
-            String password = "";
             try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                con = DriverManager.getConnection(url, username, password);
+                Class.forName(Constants.DB_DRIVER_NAME);
+                con = DriverManager.getConnection(Constants.DBLOCATION_STRING, Constants.DB_USERNAME, Constants.DB_PASSWORD);
             }catch (Exception e){
                 System.out.println(e);
             }
@@ -35,25 +32,4 @@ public class DBConnection {
 
         return con;
     }
-
-
-//	public static Connection connect() {
-//
-//		Connection con = null;
-//
-//		try {
-//
-//			Class.forName("com.mysql.cj.jdbc.Driver");
-//
-//			con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/healthcare", "root", "root");
-//
-//		} catch (Exception e) {
-//
-//			e.printStackTrace();
-//		}
-//
-//		return con;
-//
-//	}
-
 }

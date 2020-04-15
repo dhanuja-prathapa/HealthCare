@@ -5,12 +5,16 @@ import com.project.healthcare.model.Hospital;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.sql.SQLException;
 import java.util.List;
 
 @Path("hospitals")
 public class HospitalResource {
 
     HospitalController repo = new HospitalController();
+
+    public HospitalResource() throws SQLException, ClassNotFoundException {
+    }
 
     @GET
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})

@@ -1,28 +1,28 @@
 package com.project.healthcare.controller;
 
 import com.project.healthcare.model.Hospital;
+import com.project.healthcare.utils.Constants;
+import com.project.healthcare.utils.DBConnection;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.*;
+import java.util.logging.Level;
 
 
 public class HospitalController implements IHospitalController{
 
     List<Hospital> hospitals;
 
-    Connection con = null;
+    public static Connection connecton;
 
-    public HospitalController(){
+    public static Statement st;
 
-        String url = "jdbc:mysql://127.0.0.1:3306/healthcare";
-        String username = "root";
-        String password = "";
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection(url, username, password);
-        }catch (Exception e){
-            System.out.println(e);
-        }
+    private static PreparedStatement pt;
+
+    public HospitalController() throws SQLException, ClassNotFoundException {
+
+        connecton = DBConnection.getDBConnection();
     }
 
     @Override
@@ -30,39 +30,39 @@ public class HospitalController implements IHospitalController{
         List<Hospital> hospitals = new ArrayList<>();
         String sql = "select * from hospital";
         try {
-            Statement st = con.createStatement();
+            st = connecton.createStatement();
             ResultSet rs = st.executeQuery(sql);
             while(rs.next()){
                 Hospital h = new Hospital();
-                h.setId(rs.getInt(1));
-                h.setName(rs.getString(2));
-                h.setType(rs.getString(3));
-                h.setDescription(rs.getString(4));
-                h.setAddress(rs.getString(5));
-                h.setPhone(rs.getString(6));
+                mapObject(rs, h);
                 hospitals.add(h);
             }
         } catch (SQLException e){
             System.out.println(e);
+        } finally {
+
+            stClose(st);
         }
         return hospitals;
     }
 
     @Override
-    public void createHospital(Hospital h){
+    public void createHospital(Hospital h) {
         String sql = "insert into hospital values (?,?,?,?,?,?)";
 
         try {
-            PreparedStatement st = con.prepareStatement(sql);
-            st.setInt(1, h.getId());
-            st.setString(2, h.getName());
-            st.setString(3, h.getType());
-            st.setString(4, h.getDescription());
-            st.setString(5, h.getAddress());
-            st.setString(6, h.getPhone());
-            st.executeUpdate();
-        } catch (SQLException e){
+            pt = connecton.prepareStatement(sql);
+            pt.setInt(1, h.getId());
+            pt.setString(2, h.getName());
+            pt.setString(3, h.getType());
+            pt.setString(4, h.getDescription());
+            pt.setString(5, h.getAddress());
+            pt.setString(6, h.getPhone());
+            pt.executeUpdate();
+        } catch (SQLException e) {
             System.out.println(e);
+        } finally {
+            ptClose(pt);
         }
     }
 
@@ -71,18 +71,15 @@ public class HospitalController implements IHospitalController{
         String sql = "select * from hospital where id="+id;
         Hospital h = new Hospital();
         try {
-            Statement st = con.createStatement();
+            st = connecton.createStatement();
             ResultSet rs = st.executeQuery(sql);
             if(rs.next()){
-                h.setId(rs.getInt(1));
-                h.setName(rs.getString(2));
-                h.setType(rs.getString(3));
-                h.setDescription(rs.getString(4));
-                h.setAddress(rs.getString(5));
-                h.setPhone(rs.getString(6));
+                mapObject(rs, h);
             }
         } catch (SQLException e){
             System.out.println(e);
+        } finally {
+            stClose(st);
         }
         return h;
     }
@@ -92,16 +89,18 @@ public class HospitalController implements IHospitalController{
         String sql = "update hospital set name=?, type=?, description=?, address=?, phone=? where id=?";
 
         try {
-            PreparedStatement st = con.prepareStatement(sql);
-            st.setString(1, h.getName());
-            st.setString(2, h.getType());
-            st.setString(3, h.getDescription());
-            st.setString(4, h.getAddress());
-            st.setString(5, h.getPhone());
-            st.setInt(6, h.getId());
-            st.executeUpdate();
+            pt = connecton.prepareStatement(sql);
+            pt.setString(1, h.getName());
+            pt.setString(2, h.getType());
+            pt.setString(3, h.getDescription());
+            pt.setString(4, h.getAddress());
+            pt.setString(5, h.getPhone());
+            pt.setInt(6, h.getId());
+            pt.executeUpdate();
         } catch (SQLException e){
             System.out.println(e);
+        }finally {
+            ptClose(pt);
         }
     }
 
@@ -110,14 +109,54 @@ public class HospitalController implements IHospitalController{
         String sql = "delete from hospital where id=?";
         String output;
         try {
-            PreparedStatement st = con.prepareStatement(sql);
-            st.setInt(1, id);
-            st.executeUpdate();
+            pt = connecton.prepareStatement(sql);
+            pt.setInt(1, id);
+            pt.executeUpdate();
             output = "Successfully Deleted";
         } catch (SQLException e){
             System.out.println(e);
             output = "Error";
+        }finally {
+            ptClose(pt);
         }
             return output;
+    }
+
+//Close Statement
+    private void stClose(Statement st) {
+        try {
+            if(st != null) {
+                st.close();
+            }
+            if(connecton != null) {
+                connecton.close();
+                System.out.println("DB Connection Closed");
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+    private void ptClose(PreparedStatement pt) {
+        try {
+            if(pt != null) {
+                pt.close();
+            }
+            if(connecton != null) {
+                connecton.close();
+                System.out.println("DB Connection Closed");
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+
+//Map Object
+    private void mapObject(ResultSet rs, Hospital h) throws SQLException {
+        h.setId(rs.getInt(Constants.COLUMN_INDEX_ONE));
+        h.setName(rs.getString(Constants.COLUMN_INDEX_TWO));
+        h.setType(rs.getString(Constants.COLUMN_INDEX_THREE));
+        h.setDescription(rs.getString(Constants.COLUMN_INDEX_FOUR));
+        h.setAddress(rs.getString(Constants.COLUMN_INDEX_FIVE));
+        h.setPhone(rs.getString(Constants.COLUMN_INDEX_SIX));
     }
 }
