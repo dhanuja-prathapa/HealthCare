@@ -4,13 +4,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.project.healthcare</groupId>
-    <artifactId>HealthCare</artifactId>
+    <artifactId>Hospital</artifactId>
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>HealthCare</name>
+    <name>Hospital</name>
 
     <build>
-        <finalName>HealthCare</finalName>
+        <finalName>HospitalManagement</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
