@@ -10,7 +10,7 @@ public class DBConnection {
     //If there is any issue you can change it accordingly
     //Implemented with Singleton Pattern
 
-    private static Connection connection;
+    private static Connection con;
 
     private DBConnection() {
 
@@ -18,16 +18,22 @@ public class DBConnection {
 
     public static Connection getDBConnection() throws ClassNotFoundException, SQLException {
 
-        if(connection==null ||connection.isClosed()) {
+        if(con==null ||con.isClosed()) {
 
-            Class.forName("com.mysql.cj.jdbc.Driver");
-
-            connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/healthcare", "root", "root");
+            String url = "jdbc:mysql://127.0.0.1:3306/healthcare";
+            String username = "root";
+            String password = "";
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                con = DriverManager.getConnection(url, username, password);
+            }catch (Exception e){
+                System.out.println(e);
+            }
 
             System.out.println("Connected to DB");
         }
 
-        return connection;
+        return con;
     }
 
 

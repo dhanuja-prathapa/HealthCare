@@ -12,7 +12,7 @@ public interface IHospitalController {
 
     public List<Hospital> getHospitals();
 
-    public Hospital updateHospital(int id, Hospital new_id);
+    public void updateHospital(Hospital h);
 
     public String deleteHospital(int id);
 }
