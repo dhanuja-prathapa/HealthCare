@@ -11,7 +11,7 @@ import java.util.logging.Level;
 import static com.project.healthcare.utils.DBConnection.*;
 
 
-public class HospitalController implements IHospitalController{
+public class HospitalController implements IHospitalController {
 
     List<Hospital> hospitals;
 
@@ -30,12 +30,12 @@ public class HospitalController implements IHospitalController{
         try {
             st = connecton.createStatement();
             ResultSet rs = st.executeQuery(sql);
-            while(rs.next()){
+            while (rs.next()) {
                 Hospital h = new Hospital();
                 mapObject(rs, h);
                 hospitals.add(h);
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println(e);
         } finally {
 
@@ -67,16 +67,16 @@ public class HospitalController implements IHospitalController{
 
     @Override
     public Hospital getHospital(int id) {
-        String sql = "select * from hospital where id="+id;
+        String sql = "select * from hospital where id=" + id;
         Hospital h = new Hospital();
         connecton = getDBConnection();
         try {
             st = connecton.createStatement();
             ResultSet rs = st.executeQuery(sql);
-            if(rs.next()){
+            if (rs.next()) {
                 mapObject(rs, h);
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println(e);
         } finally {
             stClose(st);
@@ -97,9 +97,9 @@ public class HospitalController implements IHospitalController{
             pt.setString(5, h.getPhone());
             pt.setInt(6, h.getId());
             pt.executeUpdate();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println(e);
-        }finally {
+        } finally {
             ptClose(pt);
         }
     }
@@ -114,35 +114,22 @@ public class HospitalController implements IHospitalController{
             pt.setInt(1, id);
             pt.executeUpdate();
             output = "Successfully Deleted";
-        } catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println(e);
             output = "Error";
-        }finally {
+        } finally {
             ptClose(pt);
         }
-            return output;
+        return output;
     }
 
-//Close Statement
+    //Close Statement
     private void stClose(Statement st) {
         try {
-            if(st != null) {
+            if (st != null) {
                 st.close();
             }
-            if(connecton != null) {
-                connecton.close();
-                System.out.println("DB Connection Closed");
-            }
-        } catch (SQLException e) {
-            System.out.println(e);
-        }
-    }
-    private void ptClose(PreparedStatement pt) {
-        try {
-            if(pt != null) {
-                pt.close();
-            }
-            if(connecton != null) {
+            if (connecton != null) {
                 connecton.close();
                 System.out.println("DB Connection Closed");
             }
@@ -151,7 +138,21 @@ public class HospitalController implements IHospitalController{
         }
     }
 
-//Map Object
+    private void ptClose(PreparedStatement pt) {
+        try {
+            if (pt != null) {
+                pt.close();
+            }
+            if (connecton != null) {
+                connecton.close();
+                System.out.println("DB Connection Closed");
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+
+    //Map Object
     private void mapObject(ResultSet rs, Hospital h) throws SQLException {
         h.setId(rs.getInt(Constants.COLUMN_INDEX_ONE));
         h.setName(rs.getString(Constants.COLUMN_INDEX_TWO));
