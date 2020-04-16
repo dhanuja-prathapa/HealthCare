@@ -2,12 +2,13 @@ package com.project.healthcare.controller;
 
 import com.project.healthcare.model.Hospital;
 import com.project.healthcare.utils.Constants;
-import com.project.healthcare.utils.DBConnection;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.*;
 import java.util.logging.Level;
+
+import static com.project.healthcare.utils.DBConnection.*;
 
 
 public class HospitalController implements IHospitalController{
@@ -20,15 +21,12 @@ public class HospitalController implements IHospitalController{
 
     private static PreparedStatement pt;
 
-    public HospitalController() throws SQLException, ClassNotFoundException {
-
-        connecton = DBConnection.getDBConnection();
-    }
 
     @Override
     public List<Hospital> getHospitals() {
         List<Hospital> hospitals = new ArrayList<>();
         String sql = "select * from hospital";
+        connecton = getDBConnection();
         try {
             st = connecton.createStatement();
             ResultSet rs = st.executeQuery(sql);
@@ -49,6 +47,7 @@ public class HospitalController implements IHospitalController{
     @Override
     public void createHospital(Hospital h) {
         String sql = "insert into hospital values (?,?,?,?,?,?)";
+        connecton = getDBConnection();
 
         try {
             pt = connecton.prepareStatement(sql);
@@ -70,6 +69,7 @@ public class HospitalController implements IHospitalController{
     public Hospital getHospital(int id) {
         String sql = "select * from hospital where id="+id;
         Hospital h = new Hospital();
+        connecton = getDBConnection();
         try {
             st = connecton.createStatement();
             ResultSet rs = st.executeQuery(sql);
@@ -87,7 +87,7 @@ public class HospitalController implements IHospitalController{
     @Override
     public void updateHospital(Hospital h) {
         String sql = "update hospital set name=?, type=?, description=?, address=?, phone=? where id=?";
-
+        connecton = getDBConnection();
         try {
             pt = connecton.prepareStatement(sql);
             pt.setString(1, h.getName());
@@ -108,6 +108,7 @@ public class HospitalController implements IHospitalController{
     public String deleteHospital(int id) {
         String sql = "delete from hospital where id=?";
         String output;
+        connecton = getDBConnection();
         try {
             pt = connecton.prepareStatement(sql);
             pt.setInt(1, id);
