@@ -8,20 +8,18 @@ import com.project.healthcare.utils.idGenerate;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static com.project.healthcare.utils.DBConnection.*;
 
 
 public class HospitalController implements IHospitalController {
 
-    List<Hospital> hospitals;
-
-    public static Connection connecton;
-
-    public static Statement st;
-
-    private static PreparedStatement pt;
-
+    private Connection connecton;
+    private Statement st;
+    private PreparedStatement pt;
+    private static final Logger log = Logger.getLogger(HospitalController.class.getName());
 
     @Override
     public List<Hospital> getHospitals() {
@@ -37,9 +35,8 @@ public class HospitalController implements IHospitalController {
                 hospitals.add(h);
             }
         } catch (SQLException e) {
-            System.out.println(e);
+            log.log(Level.SEVERE, e.getMessage());
         } finally {
-
             stClose(st);
         }
         return hospitals;
@@ -47,7 +44,7 @@ public class HospitalController implements IHospitalController {
 
     @Override
     public void createHospital(Hospital h) {
-        int hosId = idGenerate.generateHosID(getIDs());
+        int hosId = idGenerate.generateHosID((ArrayList<Integer>) getIDs());
         String sql = "insert into hospital values (?,?,?,?,?,?)";
         connecton = getDBConnection();
             try {
@@ -60,7 +57,7 @@ public class HospitalController implements IHospitalController {
                 pt.setString(6, h.getPhone());
                 pt.executeUpdate();
             } catch (SQLException e) {
-                System.out.println(e);
+                log.log(Level.SEVERE, e.getMessage());
             } finally {
                 ptClose(pt);
             }
@@ -80,7 +77,7 @@ public class HospitalController implements IHospitalController {
                 mapObject(rs, h);
             }
         } catch (SQLException e) {
-            System.out.println(e);
+            log.log(Level.SEVERE, e.getMessage());
         } finally {
             stClose(st);
         }
@@ -101,7 +98,7 @@ public class HospitalController implements IHospitalController {
             pt.setInt(6, h.getId());
             pt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println(e);
+            log.log(Level.SEVERE, e.getMessage());
         } finally {
             ptClose(pt);
         }
@@ -118,7 +115,7 @@ public class HospitalController implements IHospitalController {
             pt.executeUpdate();
             output = "Successfully Deleted";
         } catch (SQLException e) {
-            System.out.println(e);
+            log.log(Level.SEVERE, e.getMessage());
             output = "Error";
         } finally {
             ptClose(pt);
@@ -166,8 +163,8 @@ public class HospitalController implements IHospitalController {
     }
 
     //getIDs ArrayList
-    public ArrayList<Integer> getIDs(){
-        ArrayList<Integer> arrayList = new ArrayList<Integer>();
+    public List<Integer> getIDs(){
+        List<Integer> arrayList = new ArrayList<Integer>();
         String query = "SELECT hospital.id FROM hospital";
         connecton = getDBConnection();
         try{
@@ -178,7 +175,7 @@ public class HospitalController implements IHospitalController {
             }
 
         }catch (Exception e){
-            System.out.println("error retrieving ids");
+            log.log(Level.SEVERE, e.getMessage());
         }finally {
             ptClose(pt);
         }
