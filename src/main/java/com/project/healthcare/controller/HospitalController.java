@@ -2,11 +2,12 @@ package com.project.healthcare.controller;
 
 import com.project.healthcare.model.Hospital;
 import com.project.healthcare.utils.Constants;
+import com.project.healthcare.utils.idGenerate;
+
 
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.*;
-import java.util.logging.Level;
 
 import static com.project.healthcare.utils.DBConnection.*;
 
@@ -46,24 +47,26 @@ public class HospitalController implements IHospitalController {
 
     @Override
     public void createHospital(Hospital h) {
+        int hosId = idGenerate.generateHosID(getIDs());
         String sql = "insert into hospital values (?,?,?,?,?,?)";
         connecton = getDBConnection();
-
-        try {
-            pt = connecton.prepareStatement(sql);
-            pt.setInt(1, h.getId());
-            pt.setString(2, h.getName());
-            pt.setString(3, h.getType());
-            pt.setString(4, h.getDescription());
-            pt.setString(5, h.getAddress());
-            pt.setString(6, h.getPhone());
-            pt.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println(e);
-        } finally {
-            ptClose(pt);
+            try {
+                pt = connecton.prepareStatement(sql);
+                pt.setInt(1, hosId);
+                pt.setString(2, h.getName());
+                pt.setString(3, h.getType());
+                pt.setString(4, h.getDescription());
+                pt.setString(5, h.getAddress());
+                pt.setString(6, h.getPhone());
+                pt.executeUpdate();
+            } catch (SQLException e) {
+                System.out.println(e);
+            } finally {
+                ptClose(pt);
+            }
         }
-    }
+
+
 
     @Override
     public Hospital getHospital(int id) {
@@ -161,4 +164,27 @@ public class HospitalController implements IHospitalController {
         h.setAddress(rs.getString(Constants.COLUMN_INDEX_FIVE));
         h.setPhone(rs.getString(Constants.COLUMN_INDEX_SIX));
     }
+
+    //getIDs ArrayList
+    public ArrayList<Integer> getIDs(){
+        ArrayList<Integer> arrayList = new ArrayList<Integer>();
+        String query = "SELECT hospital.id FROM hospital";
+        connecton = getDBConnection();
+        try{
+            pt = connecton.prepareStatement(query);
+            ResultSet resultSet = pt.executeQuery();
+            while (resultSet.next()){
+                arrayList.add(resultSet.getInt(1));
+            }
+
+        }catch (Exception e){
+            System.out.println("error retrieving ids");
+        }finally {
+            ptClose(pt);
+        }
+        return arrayList;
+    }
+
+
+
 }

@@ -49,8 +49,6 @@ public class HospitalResource {
             return output;
         }
 
-
-
     @GET
     @Path("hospital/{id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -72,8 +70,7 @@ public class HospitalResource {
     @Path("form")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_PLAIN)
-    public String createHospitalForm(@FormParam("id") int id,
-                                     @FormParam("name") String name,
+    public String createHospitalForm(@FormParam("name") String name,
                                      @FormParam("type") String type,
                                      @FormParam("description") String description,
                                      @FormParam("address") String address,
@@ -81,8 +78,6 @@ public class HospitalResource {
                                        ){
 
         Hospital h = new Hospital();
-        h.setId(id);
-        if(h.getId() != 0) {
             h.setName(name);
             h.setType(type);
             h.setDescription(description);
@@ -90,15 +85,7 @@ public class HospitalResource {
             h.setPhone(phone);
             System.out.println(h);
             repo.createHospital(h);
-            if (repo.getHospital(id).getId() != 0) {
-                return "Succesfully Created";
-            } else {
-                return "Error";
-            }
-        }else{
-            return "ID is REQUIRED";
-        }
-
+            return "Added";
     }
 
     @PUT

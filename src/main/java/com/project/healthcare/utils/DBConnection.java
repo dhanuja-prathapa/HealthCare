@@ -41,7 +41,7 @@ public class DBConnection {
             Class.forName(Constants.DB_DRIVER_NAME);
             con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306",Constants.DB_USERNAME,Constants.DB_PASSWORD);
             Statement s = con.createStatement();
-            int myResult = s.executeUpdate("CREATE DATABASE IF NOT EXISTS paf");
+            s.executeUpdate("CREATE DATABASE IF NOT EXISTS paf");
         }
         catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
