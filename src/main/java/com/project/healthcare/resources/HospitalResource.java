@@ -3,7 +3,15 @@ package com.project.healthcare.resources;
 import com.project.healthcare.controller.HospitalController;
 import com.project.healthcare.model.Hospital;
 
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.sql.SQLException;
 import java.util.List;
@@ -60,10 +68,10 @@ public class HospitalResource {
     @POST
     @Path("hospital")
     @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Hospital createHospital(Hospital h){
+    public String createHospital(Hospital h){
         System.out.println(h);
-        repo.createHospital(h);
-        return h;
+        return repo.createHospital(h);
+        
     }
 
     @POST
@@ -84,8 +92,8 @@ public class HospitalResource {
             h.setAddress(address);
             h.setPhone(phone);
             System.out.println(h);
-            repo.createHospital(h);
-            return "Added";
+          return repo.createHospital(h);
+          
     }
 
     @PUT
