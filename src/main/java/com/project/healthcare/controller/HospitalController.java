@@ -5,12 +5,6 @@ import com.project.healthcare.model.Hospital;
 import com.project.healthcare.model.HospitalAuth;
 import com.project.healthcare.utils.Constants;
 import com.project.healthcare.utils.idGenerate;
-import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -197,7 +191,7 @@ public class HospitalController implements IHospitalController {
     }
 
     //getIDs ArrayList
-    public List<Integer> getIDs(){
+    private List<Integer> getIDs(){
         List<Integer> arrayList = new ArrayList<Integer>();
         String query = "SELECT hospital.id FROM hospital";
         connecton = getDBConnection();
@@ -216,7 +210,7 @@ public class HospitalController implements IHospitalController {
         return arrayList;
     }
     
-    public List<HospitalAuth> getDetails() {
+    private List<HospitalAuth> getDetails() {
 		
     	List<HospitalAuth> dataList = new ArrayList<HospitalAuth>();
 		

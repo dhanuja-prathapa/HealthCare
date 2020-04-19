@@ -146,7 +146,6 @@ public class HospitalResource {
     @Path("hospital/{id}")
     @Produces(MediaType.TEXT_PLAIN)
     public String deleteHospital(@PathParam("id") int id){
-        Hospital h = repo.getHospital(id);
         return repo.deleteHospital(id);
     }
 }
