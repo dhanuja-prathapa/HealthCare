@@ -1,4 +1,4 @@
-# HealthCare
+# Hospital Management
 
 ## API
 Admin can access the interface and register hospitals through the Hospital API. Only authenticated hospitals given from the HospitalAuth API are allowed to be added into the system. Likewise, hospital or hospitals viewing, updating, and deletion can also be done using the Hospital API. See Appendix 6: API
